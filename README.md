@@ -1,3 +1,7 @@
+# handlebars-plugfest
+
+![image](assets/img/wip.png)
+
 Using handlebars.js to enable language and data source/CMS agnostic interface for presentation tier to use
 
 ## Goals

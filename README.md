@@ -27,8 +27,6 @@ And then run the nws webserver with
 
 You can now navigate to [http://localhost:3030/](http://localhost:3030/) to see the Browser/JavaScript version
 
-You can run also run the tests 
-
 ## Notes
 
 The example helper is adapted from this [answer](http://stackoverflow.com/a/14618035) to this [Stack Overflow Question](http://stackoverflow.com/questions/11523331/passing-variables-through-handlebars-partial)

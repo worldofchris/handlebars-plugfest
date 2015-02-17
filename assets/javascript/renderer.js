@@ -7,41 +7,33 @@
   exports.Renderer = Renderer;
 
   Renderer.prototype = {
-    setContentSource: function(contentSource) {
-      if (!contentSource)
-        throw new Error("missing contentSource");
-      this.contentSource = contentSource;
+    setContent: function(content) {
+      if (!content)
+        throw new Error("missing content");
+      this.content = JSON.parse(content);
     },
-    setTemplateSource: function(templateSource) {
-      if (!templateSource)
-        throw new Error("missing templateSource");
-      this.templateSource = templateSource;
+    setTemplate: function(template) {
+      if (!template)
+        throw new Error("missing template");
+      this.template = template;
     },
-    setPartialSource: function(partialSource) {
-      if (!partialSource)
-        throw new Error("missing partialSource");
-      this.partialSource = partialSource;
+    setPartial: function(partial) {
+      if (!partial)
+        throw new Error("missing partial");
+      this.partial = partial;
     },
-    setHelperSource: function(helperSource) {
-      if (!helperSource)
-        throw new Error("missing helperSource");
-      var helper = new Function("partial", helperSource.val());
-      this.handlebars.registerHelper('render', helper);
-    },
-    content: function() {
-      return JSON.parse(this.contentSource.val());
-    },
-    template: function() {
-      return this.templateSource.val();
+    setHelper: function(helperCode) {
+      if (!helperCode)
+        throw new Error("missing helper");
+      this.handlebars.registerHelper('render', helperCode);
     },
     render: function() {
-      if (this.partialSource) {
-        // register the partial
-        this.handlebars.registerPartial("partial", this.partialSource.val());
+      if (this.partial) {
+        this.handlebars.registerPartial("partial", this.partial);
       }
 
-      var template = this.handlebars.compile(this.template());
-      return template(this.content());
+      var template = this.handlebars.compile(this.template);
+      return template(this.content);
     }
   };
 })(this);

@@ -27,6 +27,11 @@ And then run the nws webserver with
 
 You can now navigate to [http://localhost:3030/](http://localhost:3030/) to see the Browser/JavaScript version
 
+## The Tests
+
+Once the server is up you can run the Mocha/Chai tests here: [http://localhost:3030/test.html](http://localhost:3030/test.html) 
+
+
 ## Notes
 
 The example helper is adapted from this [answer](http://stackoverflow.com/a/14618035) to this [Stack Overflow Question](http://stackoverflow.com/questions/11523331/passing-variables-through-handlebars-partial)

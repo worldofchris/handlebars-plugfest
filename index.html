@@ -87,13 +87,14 @@ This is {{render 'partial' headline=sweet }}.
     function render() {
       var renderer = new Renderer();
       // Given some specific content
-      renderer.setContentSource($('#content-specific-input'));
+      renderer.setContent($('#content-specific-input').val());
       // And a generic partial
-      renderer.setPartialSource($("#generic-partial-input"));
+      renderer.setPartial($("#generic-partial-input").val());
       // And a template containing a generic partial
-      renderer.setTemplateSource($("#template-with-generic-partial-input"));
+      renderer.setTemplate($("#template-with-generic-partial-input").val());
       // And a renderer to marshall the content
-      renderer.setHelperSource($("#helper-input"));
+      var helper = new Function("partial", $("#helper-input").val());
+      renderer.setHelper(helper);
       // When we render the template
       var result = renderer.render();
       // Then the output should be:

@@ -3,55 +3,42 @@ var should = chai.should;
 
 describe("Renderer", function() {
 
-  var $$;
-
-  beforeEach(function(){
-      fixtures.path = '/';
-      fixtures.load('assets/html/content_input.html');
-      $$ = fixtures.window().jQuery; // access the jquery instance from within the fixtures context
-  });
-
-  afterEach(function(){
-      fixtures.cleanUp(); // cleans up the fixture for the next test
-  });
-
   // TODO: Constructor test
 
-  it("should be able to have its content source set from a field on the page", function() {
+  it("should be able to have its content set", function() {
 
-    // Given some HTML containing the field where content can be entered
-    var expected_content = {content: "That"};
-    var actual_content = JSON.parse($$('#content-input').text());
-    expect (JSON.stringify(actual_content)).to.equal(JSON.stringify(expected_content));
+    // Given some JSON content
+    var content = {content: "That"};
     // And a renderer
     var renderer = new Renderer();
-    // When we set the content source to that field
-    renderer.setContentSource($$('#content-input'));
+    // When we set the content source
+    renderer.setContent(JSON.stringify(content));
     // Then the renderer should have it's content to render set to the text in that field
-    expect(JSON.stringify(renderer.content())).to.equal(JSON.stringify(expected_content));
+    expect(JSON.stringify(renderer.content)).to.equal(JSON.stringify(content));
   });
 
-  it("should be able to have its template source set from a field on the page", function() {
+  it("should be able to have its template set", function() {
+    // Given a template
     var template = "This is {{ content }}.";
-    // Given some HTML containing the field where a template can be entered
-    expect($$('#template-input').text()).to.equal(template);
     // And a renderer
     var renderer = new Renderer();
     // When we set the template source to that field
-    renderer.setTemplateSource($$('#template-input'));
-    // Then the renderer should template set to the text in that field
-    expect(renderer.template()).to.equal(template);
+    renderer.setTemplate(template);
+    // Then the renderer should have its template set to the text in that field
+    expect(renderer.template).to.equal(template);
     
   });
 
   it("should be able to render the content using the template", function() {
 
     var renderer = new Renderer();
-    // Given we set the content source to a field on the page
-    renderer.setContentSource($$('#content-input'));
-    // And we set the template source to a field on the page
-    renderer.setTemplateSource($$('#template-input'));
-    // When we render the template
+    // Given some JSON content
+    var content = {content: "That"};
+    renderer.setContent(JSON.stringify(content));
+    // And a template
+    var template = "This is {{ content }}.";
+    renderer.setTemplate(template);
+
     var result = renderer.render();
     // Then the result should be the content rendered with the template
     expect(result).to.equal("This is That.");
@@ -60,10 +47,15 @@ describe("Renderer", function() {
   it("should be able to render the content using the template and a partial", function() {
 
     var renderer = new Renderer();
-    // Given some content, a template and a partial
-    renderer.setContentSource($$('#content-input'));
-    renderer.setTemplateSource($$('#template-partial-input'));
-    renderer.setPartialSource($$("#partial-input"));
+    // Given some JSON content
+    var content = {content: "That"};
+    renderer.setContent(JSON.stringify(content));
+    // And a template
+    var template = "This is {{> partial }}.";
+    renderer.setTemplate(template);
+    // And a partial
+    var partial = "{{ content }}";
+    renderer.setPartial(partial);
     // When we render the template
     var result = renderer.render();
     // Then the output should be:
@@ -73,14 +65,45 @@ describe("Renderer", function() {
   it("should allow a generic partial to be parameterized with specific content", function() {
 
     var renderer = new Renderer();
-    // Given some specific content
-    renderer.setContentSource($$('#content-specific-input'));
-    // And a generic partial
-    renderer.setPartialSource($$("#generic-partial-input"));
-    // And a template containing a generic partial
-    renderer.setTemplateSource($$("#template-with-generic-partial-input"));
-    // And a renderer to marshall the content
-    renderer.setHelperSource($$("#helper-input"));
+    // Given some JSON content
+    var content = {sweet: "Marzipan"};
+    renderer.setContent(JSON.stringify(content));
+    // And a template
+    var template = "This is {{render 'partial' headline=sweet }}.";
+    renderer.setTemplate(template);
+    // And a partial
+    var partial = "{{ hash.headline }}";
+    renderer.setPartial(partial);
+    // And a helper function
+    var render = function() {
+      var values, opts, done, value, context;
+      if (!partial) {
+          console.error('No partial name given.');
+      }
+      values = Array.prototype.slice.call(arguments, 1);
+      opts = values.pop();
+      while (!done) {
+          value = values.pop();
+          if (value) {
+              partial = partial.replace(/:[^\.]+/, value);
+          }
+          else {
+              done = true;
+          }
+      }
+
+      console.log(opts);
+
+      context = _.extend({}, opts.context||this, _.omit(opts, 'context', 'fn', 'inverse'));
+
+      var template = Handlebars.compile(partial);
+      var output = new Handlebars.SafeString( template(context) );
+      console.log(template(context));
+      console.log(output);
+      return output;
+    };
+
+    renderer.setHelper(render);
     // When we render the template
     var result = renderer.render();
     // Then the output should be:

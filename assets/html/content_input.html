@@ -4,10 +4,59 @@
   </head>
   <body>
     <div>
-    <textarea id="content-input">{"content":"That"}</textarea>
+      <textarea id="content-input">{"content":"That"}</textarea>
     </div>
     <div>
-    <textarea id="template-input">This is {{ content }}.</textarea>
+      <textarea id="content-specific-input">{"sweet":"Marzipan"}</textarea>
+    </div>
+    <div>
+      <textarea id="template-input">This is {{ content }}.</textarea>
+    </div>
+    <div>
+      <textarea id="partial-input">{{ content }}</textarea>
+    </div>
+    <div>
+      <textarea id="generic-partial-input">{{ hash.headline }}</textarea>
+    </div>
+    <div>
+      <textarea id="template-partial-input">This is {{> partial }}.</textarea>
+    </div>
+    <div>
+      <textarea id="helper-input">
+    var values, opts, done, value, context;
+    if (!partial) {
+        console.error('No partial name given.');
+    }
+    values = Array.prototype.slice.call(arguments, 1);
+    opts = values.pop();
+    while (!done) {
+        value = values.pop();
+        if (value) {
+            partial = partial.replace(/:[^\.]+/, value);
+        }
+        else {
+            done = true;
+        }
+    }
+    partial = Handlebars.partials[partial];
+
+    if (!partial) {
+        return '';
+    }
+
+    console.log(opts);
+
+    context = _.extend({}, opts.context||this, _.omit(opts, 'context', 'fn', 'inverse'));
+
+    var template = Handlebars.compile(partial);
+    var output = new Handlebars.SafeString( template(context) );
+    console.log(template(context));
+    console.log(output);
+    return output;
+      </textarea>
+    </div>
+    <div>
+      <textarea id="template-with-generic-partial-input">This is {{render 'partial' headline=sweet }}.</textarea>
     </div>
   </body>
 </html>

@@ -57,5 +57,34 @@ describe("Renderer", function() {
     expect(result).to.equal("This is That.");
   });
 
+  it("should be able to render the content using the template and a partial", function() {
+
+    var renderer = new Renderer();
+    // Given some content, a template and a partial
+    renderer.setContentSource($$('#content-input'));
+    renderer.setTemplateSource($$('#template-partial-input'));
+    renderer.setPartialSource($$("#partial-input"));
+    // When we render the template
+    var result = renderer.render();
+    // Then the output should be:
+    expect(result).to.equal("This is That.");
+  });
+
+  it("should allow a generic partial to be parameterized with specific content", function() {
+
+    var renderer = new Renderer();
+    // Given some specific content
+    renderer.setContentSource($$('#content-specific-input'));
+    // And a generic partial
+    renderer.setPartialSource($$("#generic-partial-input"));
+    // And a template containing a generic partial
+    renderer.setTemplateSource($$("#template-with-generic-partial-input"));
+    // And a renderer to marshall the content
+    renderer.setHelperSource($$("#helper-input"));
+    // When we render the template
+    var result = renderer.render();
+    // Then the output should be:
+    expect(result).to.equal("This is Marzipan.");
+  });
 
 });

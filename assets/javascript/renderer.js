@@ -25,19 +25,19 @@
     setHelperSource: function(helperSource) {
       if (!helperSource)
         throw new Error("missing helperSource");
-      var helper = new Function("partial", helperSource.text());
+      var helper = new Function("partial", helperSource.val());
       this.handlebars.registerHelper('render', helper);
     },
     content: function() {
-      return JSON.parse(this.contentSource.text());
+      return JSON.parse(this.contentSource.val());
     },
     template: function() {
-      return this.templateSource.text();
+      return this.templateSource.val();
     },
     render: function() {
       if (this.partialSource) {
         // register the partial
-        this.handlebars.registerPartial("partial", this.partialSource.text());
+        this.handlebars.registerPartial("partial", this.partialSource.val());
       }
 
       var template = this.handlebars.compile(this.template());

@@ -5,22 +5,94 @@
 <head>
   <meta charset="utf-8">
   <title>Renderer tests</title>
-  <link rel="stylesheet" media="all" href="node_modules/mocha/mocha.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
 </head>
 <body>
-  <div id="mocha"><p><a href=".">Index</a></p></div>
-  <div id="messages"></div>
-  <div id="fixtures"></div>
-  <script src="node_modules/mocha/mocha.js"></script>
-  <script src="node_modules/js-fixtures/fixtures.js"></script>
-  <script src="node_modules/chai/chai.js"></script>
 
   <script src="bower_components/lodash/lodash.js"></script>
-
   <script src="bower_components/handlebars/handlebars.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+
   <script src="assets/javascript/renderer.js"></script>
-  <script>mocha.setup('bdd')</script>
-  <script src="tests/renderer_test.js"></script>
-  <script>mocha.run();</script>
+  <div class="container">
+    <div>
+      <h1>Source:</h1>
+    </div>
+
+    <div class="form-group">
+      <label for="content-specific-input">Content:</label>
+      <textarea class="form-control" id="content-specific-input">
+  {"sweet":"Marzipan"}
+      </textarea>
+    </div>
+
+    <div>
+      <label for="generic-partial-input">Partial:</label>
+      <textarea class="form-control" id="generic-partial-input">{{ hash.headline }}</textarea>
+    </div>
+    <div>
+      <label for="helper-input"><i>render</i> Helper:</label>
+      <textarea class="form-control" id="helper-input">
+    var values, opts, done, value, context;
+    if (!partial) {
+        console.error('No partial name given.');
+    }
+    values = Array.prototype.slice.call(arguments, 1);
+    opts = values.pop();
+    while (!done) {
+        value = values.pop();
+        if (value) {
+            partial = partial.replace(/:[^\.]+/, value);
+        }
+        else {
+            done = true;
+        }
+    }
+    partial = Handlebars.partials[partial];
+
+    if (!partial) {
+        return '';
+    }
+
+    context = _.extend({}, opts.context||this, _.omit(opts, 'context', 'fn', 'inverse'));
+
+    var template = Handlebars.compile(partial);
+    var output = new Handlebars.SafeString( template(context) );
+    return output;
+      </textarea>
+    </div>
+    <div>
+      <label for="template-with-generic-partial-input">Template:</label>
+      <textarea class="form-control" id="template-with-generic-partial-input">This is {{render 'partial' headline=sweet }}.</textarea>
+    </div> 
+    <div>
+      <h1>Result:</h1>
+      <div id="result">
+
+      </div>  
+    </div>
+    <div>
+      <input id="render" type="button" value="Render" onclick="render();" />
+    </div>
+  </div>
+  <script>
+    function render() {
+      var renderer = new Renderer();
+      // Given some specific content
+      renderer.setContentSource($('#content-specific-input'));
+      // And a generic partial
+      renderer.setPartialSource($("#generic-partial-input"));
+      // And a template containing a generic partial
+      renderer.setTemplateSource($("#template-with-generic-partial-input"));
+      // And a renderer to marshall the content
+      renderer.setHelperSource($("#helper-input"));
+      // When we render the template
+      var result = renderer.render();
+      // Then the output should be:
+      console.log(result);
+      $("#result").html(result);
+    }
+  </script>
 </body>
 </html>

@@ -9,5 +9,7 @@
     "chai": "^2.0.0",
     "bower": "^1.3.12"
   },
-  "scripts": {}
+  "scripts": {
+    "start": "./node_modules/.bin/nws"
+  }
 }

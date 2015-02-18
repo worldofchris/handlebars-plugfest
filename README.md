@@ -1,6 +1,6 @@
 # handlebars-plugfest
 
-![image](assets/img/wip.png)
+![image](browser-javascript/assets/img/wip.png)
 
 Using handlebars.js to enable language and data source/CMS agnostic interface for presentation tier to use
 
@@ -10,11 +10,15 @@ Using handlebars.js to enable language and data source/CMS agnostic interface fo
 * Granular reusable partials
 * Work in the browser, in Node, in Rails and in Java
 
-## Dependencies
+## Browser JavaScript
+
+In the `browser-javascript` directory we have an example of Handlebars.js working in the browser with JavaScript
+
+### Dependencies
 
 * Node.js
 
-## Usage
+### Usage
 
 Install the Node and Bower dependencies:
 
@@ -27,11 +31,15 @@ And then run the nws webserver with
 
 You can now navigate to [http://localhost:3030/](http://localhost:3030/) to see the Browser/JavaScript version
 
-## The Tests
+### The Tests
 
 Once the server is up you can run the Mocha/Chai tests here: [http://localhost:3030/test.html](http://localhost:3030/test.html) 
 
 
-## Notes
+### Notes
 
 The example helper is adapted from this [answer](http://stackoverflow.com/a/14618035) to this [Stack Overflow Question](http://stackoverflow.com/questions/11523331/passing-variables-through-handlebars-partial)
+
+## Java
+
+WIP.
